@@ -41,7 +41,7 @@ func (a *Authorizer) loadStatemens(policies []string) ([]models.PolicyStatement,
 	return statements, nil
 }
 
-func (a *Authorizer) Check(principal string, principalType string, policies []string, resource string, action string) (bool, error) {
+func (a *Authorizer) Check(principal string, principalType string, policies []string, resource string, action string, skip_action bool) (bool, error) {
 
 	authResult := false
 	principalMatched := true
@@ -85,6 +85,10 @@ func (a *Authorizer) Check(principal string, principalType string, policies []st
 					principalMatched = true
 				}
 			}
+		}
+
+		if skip_action {
+			statementActionMateched = true
 		}
 
 		if statementActionMateched && statementResourceMatched && principalMatched && strings.ToLower(statement.Effect) == "deny" {
